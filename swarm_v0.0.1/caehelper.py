@@ -7,6 +7,7 @@ import numpy as np
 import os
 import matplotlib.pyplot as plt
 import cv2
+from tqdm import tqdm
 
 # set path to store processed img data
 DATA_DIR = '/home/oscar47/Desktop/physics/swarm_data/cae_output'
@@ -51,9 +52,11 @@ def display(arr1, arr2):
 # now actually prepare data! -------------------
 def build_dataset(img_path, img_height=80, img_width=80):
     img_list = []
-    for file in os.listdir(img_path):
+    files = os.listdir(img_path)
+    for i in tqdm(range(len(files)), desc='progress...', position=0, leave=True):
+        file = files[i]
         #print(file)
-        if file.endswith('.jpg'):
+        if (file.endswith('.jpg')) or (file.endswith('.png')):
             img = cv2.imread(os.path.join(img_path, file))
             #img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV) # HSV color option is best for object tracking
             img = cv2.resize(img, (img_width, img_height))
@@ -87,8 +90,8 @@ def build_dataset(img_path, img_height=80, img_width=80):
 
     # save!
     print('saving!')
-    np.save(os.path.join(DATA_DIR, 'train_ds.npy', train_ds))
-    np.save(os.path.join(DATA_DIR, 'val_ds.npy', val_ds))
-    np.save(os.path.join(DATA_DIR, 'extra_ds.npy', extra_ds))
+    np.save(os.path.join(DATA_DIR, 'train_ds.npy'), train_ds)
+    np.save(os.path.join(DATA_DIR, 'val_ds.npy'), val_ds)
+    np.save(os.path.join(DATA_DIR, 'extra_ds.npy'), extra_ds)
     
     return train_ds, val_ds, extra_ds
