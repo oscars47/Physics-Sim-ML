@@ -8,6 +8,8 @@ import numpy as numpy
 import matplotlib.pyplot as plt
 
 #print(cv.__version__)
+FRAME_RATE = 60
+DATA_DIR = '/home/oscar47/Desktop/physics/swarm_data'
 
 def get_frame(sec, vidcap, count, vid_name, data_dir):
     vidcap.set(cv2.CAP_PROP_POS_MSEC,sec*1000)
@@ -21,28 +23,27 @@ def convert_video(path, vid_name, data_dir):
     vidcap = cv2.VideoCapture(path)
 
     sec = 0
-    frameRate = 240 # it will capture 240 images per second
     count=1
     success = get_frame(sec, vidcap, count, vid_name, data_dir)
 
     while success:
         count = count + 1
-        sec = sec + 1 / frameRate
+        sec = sec + 1 / FRAME_RATE
         #sec = round(sec, 10)
         success = get_frame(sec, vidcap, count, vid_name, data_dir)
 
+def master_convert(dpath):
+    for name in os.listdir(dpath):
+        if (name.endswith('.MOV')) or (name.endswith('.mp4')):
+            print('extracting movie ' + name)
+            # extract vid name from the name
+            vid_name = name.split('.')[0]
+            # concatenate path
+            path = os.path.join(dpath, name)
+            # create folder for images if not done so already
+            store_path = os.path.join(dpath, 'images')
+            if not (os.path.isdir(store_path)):
+                os.mkdir(store_path)
+            convert_video(path, vid_name, dpath)
 
-#convert all videos in 'balls' directory
-ball_dir = '/Volumes/PHLUID/Data/Balls/'
-for name in os.listdir(ball_dir):
-    if name.endswith('.MOV'):
-        print('extracting movie ' + name)
-        # extract vid name from the name
-        vid_name = name.split('.')[0]
-        # concatenate path
-        path = os.path.join(ball_dir, name)
-        # create folder for images if not done so already
-        store_path = os.path.join(ball_dir, 'images')
-        if not (os.path.isdir(store_path)):
-            os.mkdir(store_path)
-        convert_video(path, vid_name, ball_dir)
+master_convert(DATA_DIR)
