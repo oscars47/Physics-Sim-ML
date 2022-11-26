@@ -1,4 +1,4 @@
-# Physics-Sim-ML
+# Physics-Sim-ML --- PHLUID (PHhysics Learning Under Image Detection)
 A repo for my physics-based simulation and machine learning projects.
 ## Current Projects:
 1. Predicting the time evolution of the Swarmalator system (https://www.complexity-explorables.org/explorables/swarmalators/) using a Convolutional Autoencoder paired with a Recurrent Neural Network.
