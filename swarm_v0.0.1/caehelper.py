@@ -50,48 +50,67 @@ def display(arr1, arr2):
 
 
 # now actually prepare data! -------------------
-def build_dataset(img_path, img_height=80, img_width=80):
-    img_list = []
-    files = os.listdir(img_path)
-    for i in tqdm(range(len(files)), desc='progress...', position=0, leave=True):
-        file = files[i]
-        #print(file)
-        if (file.endswith('.jpg')) or (file.endswith('.png')):
-            img = cv2.imread(os.path.join(img_path, file))
-            #img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV) # HSV color option is best for object tracking
-            img = cv2.resize(img, (img_width, img_height))
-            #img_list.append([img])
-            img_list.append(np.array(img))
-
-
-    # first split the images into tv and extra
-    first_split_index = int(0.75*len(img_list))
-    tv_img_list = img_list[:first_split_index]
-    extra_img_list = img_list[first_split_index:]    
-
-    # split tv ds 80-20
-    tv_index = int(len(tv_img_list)*0.8)
-    train_img_list = tv_img_list[:tv_index]
-    val_img_list = tv_img_list[tv_index:]
-   
-    train_ds = np.array(train_img_list)
-    val_ds = np.array(val_img_list)
-    extra_ds = np.array(extra_img_list)
-
-    # preprocess here
-    train_ds = train_ds.astype('float32')
-    train_ds /= 255
-
-    val_ds = val_ds.astype('float32')
-    val_ds /= 255
-
-    extra_ds = extra_ds.astype('float32')
-    extra_ds /= 255
-
-    # save!
-    print('saving!')
-    np.save(os.path.join(DATA_DIR, 'train_ds.npy'), train_ds)
-    np.save(os.path.join(DATA_DIR, 'val_ds.npy'), val_ds)
-    np.save(os.path.join(DATA_DIR, 'extra_ds.npy'), extra_ds)
+def build_dataset(img_path, img_height, img_width):
+    choice=input('do you want to load tv (a) or extra (b)?')
     
-    return train_ds, val_ds, extra_ds
+    files = os.listdir(img_path)
+    # split 72-25
+    first_split_index = int(0.75*len(files))
+    tv_files = files[:first_split_index]
+    extra_files = files[first_split_index:]
+    tv_img_list = []
+    if choice=='a': # load main tv dataset
+        for i in tqdm(range(len(tv_files)), desc='progress on tv...', position=0, leave=True):
+            file = tv_files[i]
+            #print(file)
+            if (file.endswith('.jpg')) or (file.endswith('.png')):
+                img = cv2.imread(os.path.join(img_path, file))
+                #img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV) # HSV color option is best for object tracking
+                img = cv2.resize(img, (img_width, img_height))
+                #img_list.append([img])
+                tv_img_list.append(np.array(img))
+        
+        # split tv ds 80-20
+        tv_index = int(len(tv_img_list)*0.8)
+        train_img_list = tv_img_list[:tv_index]
+        val_img_list = tv_img_list[tv_index:]
+    
+        train_ds = np.array(train_img_list)
+        val_ds = np.array(val_img_list)
+
+        # preprocess here
+        train_ds = train_ds.astype('float32')
+        train_ds /= 255
+
+        val_ds = val_ds.astype('float32')
+        val_ds /= 255
+
+        # save!
+        print('saving!')
+        np.save(os.path.join(DATA_DIR, 'train_ds.npy'), train_ds)
+        np.save(os.path.join(DATA_DIR, 'val_ds.npy'), val_ds)
+
+    elif choice =='b':
+        extra_img_list = []
+
+        for i in tqdm(range(len(extra_files)), desc='progress on extra...', position=0, leave=True):
+            #print(i)
+            file = extra_files[i]
+            #print(file)
+            if (file.endswith('.jpg')) or (file.endswith('.png')):
+                img = cv2.imread(os.path.join(img_path, file))
+                #img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV) # HSV color option is best for object tracking
+                img = cv2.resize(img, (img_width, img_height))
+                #img_list.append([img])
+                extra_img_list.append(np.array(img))
+
+        
+        extra_ds = np.array(extra_img_list)
+
+    
+
+        extra_ds = extra_ds.astype('float32')
+        extra_ds /= 255
+
+        print('saving!')
+        np.save(os.path.join(DATA_DIR, 'extra_ds.npy'), extra_ds)

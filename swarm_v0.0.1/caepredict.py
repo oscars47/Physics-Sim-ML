@@ -27,6 +27,7 @@ def get_fvs(ds, name):
 # now go the other way -- decode fvs to get real images!
 def get_imgs(ds, name):
     imgs = decoder.predict(ds)
+    # resize the images!
     # save the images!
     for i, img in enumerate(imgs):
         plt.imshow(img)
@@ -49,6 +50,7 @@ def get_movie(ds, name):
     out = cv2.VideoWriter(os.path.join(DATA_DIR, name+'.mp4'),cv2.VideoWriter_fourcc(*'DIVX'), frameRate, frameSize)
 
     for img in imgs:
+        # resize images
         out.write(img)
 
     out.release()
