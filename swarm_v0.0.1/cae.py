@@ -83,7 +83,7 @@ def train_custom():
 
 if not(os.path.exists(os.path.join(MAIN_DIR, 'models'))):
     os.mkdir(os.path.join(MAIN_DIR, 'models'))
-modelpath = os.path.join(MAIN_DIR, 'models', 'custom1.hf5')
+modelpath = os.path.join(MAIN_DIR, 'models', 'custom1.hdf5')
 checkpoint = ModelCheckpoint(modelpath, monitor='loss',
                              verbose=1, save_best_only=True,
                              mode='min')
