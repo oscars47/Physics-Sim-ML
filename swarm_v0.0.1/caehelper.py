@@ -9,10 +9,6 @@ import matplotlib.pyplot as plt
 import cv2
 from tqdm import tqdm
 
-# set path to store processed img data
-DATA_DIR = '/home/oscar47/Desktop/physics/swarm_data/cae_output'
-
-
 def noise(array):
     # adds randomly generated noise
     noise_factor = 0.4
@@ -50,7 +46,7 @@ def display(arr1, arr2):
 
 
 # now actually prepare data! -------------------
-def build_dataset(img_path, img_height, img_width):
+def build_dataset(img_path, save_path, img_height, img_width):
     choice=input('do you want to load tv (a) or extra (b)?')
     
     files = os.listdir(img_path)
@@ -68,7 +64,8 @@ def build_dataset(img_path, img_height, img_width):
                 #img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV) # HSV color option is best for object tracking
                 img = cv2.resize(img, (img_width, img_height))
                 #img_list.append([img])
-                tv_img_list.append(np.array(img))
+                #tv_img_list.append(np.array(img))
+                tv_img_list.append(img)
         
         # split tv ds 80-20
         tv_index = int(len(tv_img_list)*0.8)
@@ -87,8 +84,9 @@ def build_dataset(img_path, img_height, img_width):
 
         # save!
         print('saving!')
-        np.save(os.path.join(DATA_DIR, 'train_ds.npy'), train_ds)
-        np.save(os.path.join(DATA_DIR, 'val_ds.npy'), val_ds)
+        print(train_ds.shape)
+        np.save(os.path.join(save_path, 'train_ds.npy'), train_ds)
+        np.save(os.path.join(save_path, 'val_ds.npy'), val_ds)
 
     elif choice =='b':
         extra_img_list = []
@@ -113,4 +111,4 @@ def build_dataset(img_path, img_height, img_width):
         extra_ds /= 255
 
         print('saving!')
-        np.save(os.path.join(DATA_DIR, 'extra_ds.npy'), extra_ds)
+        np.save(os.path.join(save_path, 'extra_ds.npy'), extra_ds)

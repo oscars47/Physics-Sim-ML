@@ -2,6 +2,7 @@
 # @oscars47
 
 import os
+import tensorflow as tf
 from keras import layers
 from keras.models import Sequential
 from keras.optimizers import Adam
@@ -10,15 +11,32 @@ from wandb.keras import WandbCallback
 from caehelper import *
 
 # define img dimesions
-IMG_HEIGHT = 392
-IMG_WIDTH = 392
+IMG_HEIGHT = 104
+IMG_WIDTH = 104
 input_shape = layers.Input(shape=(IMG_HEIGHT, IMG_WIDTH, 3)) # do care about color
 
 # load data
-DATA_DIR= '/home/oscar47/Desktop/physics/swarm_data/images'
+DATA_DIR= '/home/oscar47/Desktop/physics/swarm_data/cae_output'
 
 train_ds = np.load(os.path.join(DATA_DIR, 'train_ds.npy'))
 val_ds = np.load(os.path.join(DATA_DIR, 'val_ds.npy'))
+
+# print('num gpus available', tf.config.experimental.list_physical_devices('GPU'))
+
+# # gpus = tf.config.experimental.list_physical_devices('GPU')
+# # if gpus:
+# #   try:
+# #     for gpu in gpus:
+# #       tf.config.experimental.set_memory_growth(gpu, True)
+# #   except RuntimeError as e:
+# #     print(e)
+
+# gpus = tf.config.experimental.list_physical_devices('GPU')
+# if gpus:
+#   try:
+#     tf.config.experimental.set_virtual_device_configuration(gpus[0], [tf.config.experimental.VirtualDeviceConfiguration(memory_limit=10024)])
+#   except RuntimeError as e:
+#     print(e)
 
 
 # build autoencoder-------------
@@ -46,6 +64,8 @@ def build_cae(input_shape, conv2d1_size=32, conv2d2_size=32, conv2d3_size=32, co
     optimizer = Adam(learning_rate = learning_rate)
     model.compile(optimizer=optimizer, loss='mse')
 
+    model.summary()
+
     return model
 
 def train(config=None):
@@ -58,7 +78,7 @@ def train(config=None):
 
       #initialize the neural net; 
       global model
-      model = build_cae(conv2d1_size=config.conv2d1_size, conv2d2_size=config.conv2d2_size, conv2d3_size=config.conv2d3_size, convtrans1_size=config.convtrans1_size, 
+      model = build_cae(input_shape, conv2d1_size=config.conv2d1_size, conv2d2_size=config.conv2d2_size, conv2d3_size=config.conv2d3_size, convtrans1_size=config.convtrans1_size, 
          convtrans2_size=config.convtrans2_size, convtrans3_size=config.convtrans1_size, learning_rate = config.learning_rate)
       
       #now run training
@@ -70,6 +90,19 @@ def train(config=None):
         epochs=config.epochs,
         callbacks=[WandbCallback()] #use callbacks to have w&b log stats; will automatically save best model                     
       )
+
+def train_custom():
+   global model
+   model = build_cae(input_shape)
+      
+   #now run training
+   history = model.fit(
+      train_ds, train_ds,
+      batch_size = 4,
+      validation_data=(val_ds, val_ds),
+      shuffle=False,
+      epochs=5,                    
+   )
 
 
 # set dictionary with random search; optimizing val_loss--------------------------
@@ -84,8 +117,8 @@ sweep_config['metric']= 'val_accuracy'
 parameters_dict = {
     'epochs': {
        'distribution': 'int_uniform',
-       'min': 20,
-       'max': 30
+       'min': 15,
+       'max': 20
     },
     # for build_dataset
      'batch_size': {
@@ -127,11 +160,13 @@ parameters_dict = {
 }
 
 # append parameters to sweep config
-sweep_config['parameters'] = parameters_dict 
+# sweep_config['parameters'] = parameters_dict 
 
-# login to wandb----------------
-wandb.init(project="Astro101_Project_v3(MEGA)", entity="oscarscholin")
+# # login to wandb----------------
+# wandb.init(project="PHLUID-SwarmCAE1", entity="oscarscholin")
 
-# initialize sweep agent
-sweep_id = wandb.sweep(sweep_config, project='Astro101_Project_v3(MEGA)', entity="oscarscholin")
-wandb.agent(sweep_id, train, count=20)
+# # initialize sweep agent
+# sweep_id = wandb.sweep(sweep_config, project='PHLUID-SwarmCAE1', entity="oscarscholin")
+# wandb.agent(sweep_id, train, count=20)
+
+train_custom()
