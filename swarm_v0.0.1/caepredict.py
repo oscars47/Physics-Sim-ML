@@ -3,11 +3,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 from keras.models import Model, load_model
 
-MODEL_DIR = '/home/oscar47/Desktop/physics/swarm_models'
-# data_path = '/home/oscar47/Desktop/physics/swarm_data/cae_output'
+MODEL_DIR = '/media/oscar47/Oscar Extra/Physics data/swarm_data/models'
 
 
-model = load_model(os.path.join(MODEL_DIR, 'name.h5'))
+model = load_model(os.path.join(MODEL_DIR, 'whole4_cae.h5'))
 # create new model for the FV
 encoder = Model(inputs=model.input, outputs=model.get_layer('FV').output)
 decoder = Model(inputs=encoder.output, outputs=model.get_layer('OUT').output)

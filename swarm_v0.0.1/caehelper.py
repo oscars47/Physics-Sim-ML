@@ -17,21 +17,22 @@ def noise(array):
     return np.clip(noise_array, 0.0, 1.0)
 
 
-def display(arr1, arr2):
-    # displays 4 random images from each of the supplied arrays
-    n = 4
+def display_sequential(name, arr1, arr2):
+    # displays first 10 images from each of the supplied arrays
+    n = 10
 
-    indices = np.random.randint(len(arr1), size=n)
-    imgs1 = arr1[indices, :]
-    imgs2 = arr2[indices, :]
+    imgs1 = arr1[:n]
+    imgs2 = arr2[:n]
 
     plt.figure(figsize=(20, 4))
+    plt.title('Sequential for ' + name)
     for i, (img1, img2) in enumerate(zip(imgs1, imgs2)):
         # figure block 1
         ax = plt.subplot(2, n, i+1)
         #plt.imshow(img1.reshape(192, 108))
         plt.imshow(img1)
         plt.gray()
+        plt.title('Original')
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
 
@@ -39,6 +40,37 @@ def display(arr1, arr2):
         ax = plt.subplot(2, n, i+1+n)
         plt.imshow(img2)
         plt.gray()
+        plt.title('Reconstructed')
+        ax.get_xaxis().set_visible(False)
+        ax.get_yaxis().set_visible(False)
+
+    plt.show()
+
+def display_random(name, arr1, arr2):
+    # displays 10 random images from each of the supplied arrays
+    n = 10
+
+    indices = np.random.randint(len(arr1), size=n)
+    imgs1 = arr1[indices, :]
+    imgs2 = arr2[indices, :]
+
+    plt.figure(figsize=(20, 4))
+    plt.title('Random for ' + name)
+    for i, (img1, img2) in enumerate(zip(imgs1, imgs2)):
+        # figure block 1
+        ax = plt.subplot(2, n, i+1)
+        #plt.imshow(img1.reshape(192, 108))
+        plt.imshow(img1)
+        plt.gray()
+        plt.title('Original')
+        ax.get_xaxis().set_visible(False)
+        ax.get_yaxis().set_visible(False)
+
+        # figure block 2
+        ax = plt.subplot(2, n, i+1+n)
+        plt.imshow(img2)
+        plt.gray()
+        plt.title('Reconstructed')
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
 
@@ -49,7 +81,9 @@ def display(arr1, arr2):
 def build_dataset(img_path, save_path, img_height, img_width):
     choice=input('do you want to load tv (a) or extra (b)?')
     
-    files = os.listdir(img_path)
+    files = os.listdir(img_path) # read in files
+    files = sorted(files)  # need to sort them!!
+    print(files)
     # split 72-25
     first_split_index = int(0.75*len(files))
     tv_files = files[:first_split_index]
