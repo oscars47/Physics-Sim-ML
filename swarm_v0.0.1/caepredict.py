@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from keras.models import Model, load_model
 
 MODEL_DIR = '/home/oscar47/Desktop/physics/swarm_models'
-DATA_DIR = '/home/oscar47/Desktop/physics/swarm_data/cae_output'
+# data_path = '/home/oscar47/Desktop/physics/swarm_data/cae_output'
 
 
 model = load_model(os.path.join(MODEL_DIR, 'name.h5'))
@@ -13,7 +13,7 @@ encoder = Model(inputs=model.input, outputs=model.get_layer('FV').output)
 decoder = Model(inputs=encoder.output, outputs=model.get_layer('OUT').output)
 
 # get the feature vector representation of image arrays
-def get_fvs(ds, name):
+def get_fvs(ds, data_path, name):
     fvs = encoder.predict(ds)
     shape = fvs.shape
     shape1 = shape[1]
@@ -22,10 +22,10 @@ def get_fvs(ds, name):
     fvs = fvs.reshape(len(ds),shape1*shape2*shape3)
 
     # save!
-    np.save(os.path.join(DATA_DIR, 'fv_'+name+'.npy'))
+    np.save(os.path.join(data_path, 'fv_'+name+'.npy'))
     
 # now go the other way -- decode fvs to get real images!
-def get_imgs(ds, name):
+def get_imgs(ds, data_path, name):
     imgs = decoder.predict(ds)
     # resize the images!
     # save the images!
@@ -38,16 +38,16 @@ def get_imgs(ds, name):
         #hide y-axis 
         ax.get_yaxis().set_visible(False)
         # now actually save the images!
-        if not(os.path.isdir(os.path.join(DATA_DIR, 'name'))):
-            os.makedirs(os.path.isdir(os.path.join(DATA_DIR, 'name')))
-        plt.savefig(os.path.join(DATA_DIR, name+'/'+str(i)+'.png'))
+        if not(os.path.isdir(os.path.join(data_path, 'name'))):
+            os.makedirs(os.path.isdir(os.path.join(data_path, 'name')))
+        plt.savefig(os.path.join(data_path, name+'/'+str(i)+'.png'))
 
-def get_movie(ds, name):
+def get_movie(ds, data_path, name):
     imgs = decoder.predict(ds)
 
     frameSize = (392, 392)
     frameRate = 60
-    out = cv2.VideoWriter(os.path.join(DATA_DIR, name+'.mp4'),cv2.VideoWriter_fourcc(*'DIVX'), frameRate, frameSize)
+    out = cv2.VideoWriter(os.path.join(data_path, name+'.mp4'),cv2.VideoWriter_fourcc(*'DIVX'), frameRate, frameSize)
 
     for img in imgs:
         # resize images
