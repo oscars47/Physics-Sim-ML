@@ -76,22 +76,38 @@ def display_random(name, arr1, arr2):
 
     plt.show()
 
+# function to fix ordering
+def fix_ordering(files):
+    numbers = []
+    for file in files:
+        ls = file.split('_')
+        num = int(ls[1].split('.')[0])
+        numbers.append(num)
+    numbers_sorted = sorted(numbers)
+    #print(numbers_sorted[:10])
+    files_sorted = []
+    for num in numbers_sorted:
+        files_sorted.append('all_'+str(num)+'.jpg')
+
+    return files_sorted
+
 
 # now actually prepare data! -------------------
 def build_dataset(img_path, save_path, img_height, img_width):
     choice=input('do you want to load tv (a) or extra (b)?')
     
     files = os.listdir(img_path) # read in files
-    files = sorted(files)  # need to sort them!!
-    print(files)
+    #files = sorted(files)  # need to sort them!! --> doing just this won't work since the numbers are left as strings and so don't sort properly
+    files_sorted = fix_ordering(files)
+    print(str(len(files_sorted)) + ' files sorted')
     # split 72-25
-    first_split_index = int(0.75*len(files))
-    tv_files = files[:first_split_index]
-    extra_files = files[first_split_index:]
+    first_split_index = int(0.75*len(files_sorted))
+    tv_files = files_sorted[:first_split_index]
+    extra_files = files_sorted[first_split_index:]
     tv_img_list = []
     if choice=='a': # load main tv dataset
-        for i in tqdm(range(len(tv_files)), desc='progress on tv...', position=0, leave=True):
-            file = tv_files[i]
+        for file in tqdm(tv_files, desc='progress on tv...', position=0, leave=True):
+            
             #print(file)
             if (file.endswith('.jpg')) or (file.endswith('.png')):
                 img = cv2.imread(os.path.join(img_path, file))
@@ -125,9 +141,8 @@ def build_dataset(img_path, save_path, img_height, img_width):
     elif choice =='b':
         extra_img_list = []
 
-        for i in tqdm(range(len(extra_files)), desc='progress on extra...', position=0, leave=True):
-            #print(i)
-            file = extra_files[i]
+        for file in tqdm(extra_files, desc='progress on extra...', position=0, leave=True):
+            
             #print(file)
             if (file.endswith('.jpg')) or (file.endswith('.png')):
                 img = cv2.imread(os.path.join(img_path, file))
