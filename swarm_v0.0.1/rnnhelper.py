@@ -6,7 +6,7 @@ import numpy as np
 from tqdm import tqdm
 from caepredict import encoder, get_fvs
 
-MAIN_DIR = '/media/oscar47/Oscar Extra/Physics data/swarm_data'
+MAIN_DIR = '/media/oscar47/Oscar Extra/Physics_data/swarm_data'
 DATA_DIR = os.path.join(MAIN_DIR, 'cae_output')
 OUTPUT_DIR = os.path.join(MAIN_DIR, 'rnn_output')
 MAX_FRAME = 120 # number of consecutive frame fv groupings

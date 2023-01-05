@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from keras.models import Model, load_model
 
-MODEL_DIR = '/media/oscar47/Oscar Extra/Physics data/swarm_data/models'
+MODEL_DIR = '/media/oscar47/Oscar Extra/Physics_data/swarm_data/models'
 
 
 model = load_model(os.path.join(MODEL_DIR, 'whole4_doubledip.hdf5'))
