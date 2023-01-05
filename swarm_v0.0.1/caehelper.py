@@ -9,15 +9,14 @@ import matplotlib.pyplot as plt
 import cv2
 from tqdm import tqdm
 
-def noise(array):
+def noise(array, noise_factor=0.08):
     # adds randomly generated noise
-    noise_factor = 0.4
-    noise_array = array + noise_factor*np.random.norm(loc = 0.0, scale = 1.0, size=array.shape)
+    noise_array = array + noise_factor*np.random.normal(loc = 0.0, scale = 1.0, size=array.shape)
 
     return np.clip(noise_array, 0.0, 1.0)
 
 
-def display_sequential(name, arr1, arr2):
+def display_sequential(arr1, arr2):
     # displays first 10 images from each of the supplied arrays
     n = 10
 
@@ -25,14 +24,13 @@ def display_sequential(name, arr1, arr2):
     imgs2 = arr2[:n]
 
     plt.figure(figsize=(20, 4))
-    plt.title('Sequential for ' + name)
     for i, (img1, img2) in enumerate(zip(imgs1, imgs2)):
         # figure block 1
         ax = plt.subplot(2, n, i+1)
         #plt.imshow(img1.reshape(192, 108))
         plt.imshow(img1)
         plt.gray()
-        plt.title('Original')
+        ax.set_title('Original')
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
 
@@ -40,13 +38,13 @@ def display_sequential(name, arr1, arr2):
         ax = plt.subplot(2, n, i+1+n)
         plt.imshow(img2)
         plt.gray()
-        plt.title('Reconstructed')
+        ax.set_title('Reconstructed')
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
-
+    #plt.title('Sequential for ' + name)
     plt.show()
 
-def display_random(name, arr1, arr2):
+def display_random(arr1, arr2):
     # displays 10 random images from each of the supplied arrays
     n = 10
 
@@ -55,14 +53,14 @@ def display_random(name, arr1, arr2):
     imgs2 = arr2[indices, :]
 
     plt.figure(figsize=(20, 4))
-    plt.title('Random for ' + name)
+    #plt.title('Random for ' + name)
     for i, (img1, img2) in enumerate(zip(imgs1, imgs2)):
         # figure block 1
         ax = plt.subplot(2, n, i+1)
         #plt.imshow(img1.reshape(192, 108))
         plt.imshow(img1)
         plt.gray()
-        plt.title('Original')
+        ax.set_title('Original')
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
 
@@ -70,7 +68,7 @@ def display_random(name, arr1, arr2):
         ax = plt.subplot(2, n, i+1+n)
         plt.imshow(img2)
         plt.gray()
-        plt.title('Reconstructed')
+        ax.set_title('Reconstructed')
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
 
