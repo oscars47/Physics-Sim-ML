@@ -36,18 +36,19 @@ def encode_data():
 
     # read in train, val, extra sequentially
     train_ds = np.load(os.path.join(DATA_DIR, 'train_ds.npy'))
+    train_ds = train_ds[:int(0.6*len(train_ds))]
     x, _ = get_x_y(train_ds, 'train')
     train_ds = 0 # dump the values for memory
 
-    print(x.shape) # priting for validation
-    print(x[:10])
+    # print(x.shape) # priting for validation
+    # print(x[:10])
 
-    val_ds = np.load(os.path.join(DATA_DIR, 'val_ds.npy'))
-    get_x_y(val_ds, 'val')
-    val_ds = 0 # dump the values for memory
+    # val_ds = np.load(os.path.join(DATA_DIR, 'val_ds.npy'))
+    # get_x_y(val_ds, 'val')
+    # val_ds = 0 # dump the values for memory
 
-    extra_ds = np.load(os.path.join(DATA_DIR, 'extra_ds.npy'))
-    get_x_y(extra_ds, 'extra')
+    # extra_ds = np.load(os.path.join(DATA_DIR, 'extra_ds.npy'))
+    # get_x_y(extra_ds, 'extra')
 
 encode_data()
 

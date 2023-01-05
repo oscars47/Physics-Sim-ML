@@ -29,8 +29,8 @@ val_ds = np.load(os.path.join(DATA_DIR, 'val_ds.npy'))
 # np.save('train_dd.npy', train_dd)
 # np.save('val_dd.npy', val_dd)
 
-train_dd = np.load(os.path.join(DATA_DIR, 'train_dd.npy'))
-val_dd = np.load(os.path.join(DATA_DIR, 'val_dd.npy'))
+# train_dd = np.load(os.path.join(DATA_DIR, 'train_dd.npy'))
+# val_dd = np.load(os.path.join(DATA_DIR, 'val_dd.npy'))
 
 
 # build autoencoder-------------
@@ -62,15 +62,16 @@ def build_cae(input_shape, conv2d1_size=32, conv2d2_size=32, conv2d3_size=32, co
 
     return model
 
-def train_custom():
+def train_custom(conv2d1_size, conv2d2_size, conv2d3_size, convtrans1_size, convtrans2_size, convtrans3_size, learning_rate):
    global model
-   model = build_cae(input_shape, 200, 209, 143, 183, 227, 131, 0.0004686366872955983) # using whole4 params
+   model = build_cae(input_shape, conv2d1_size=conv2d1_size, 
+   conv2d2_size=conv2d2_size, conv2d3_size=conv2d3_size, convtrans1_size=convtrans1_size, convtrans2_size=convtrans2_size, convtrans3_size=convtrans3_size, learning_rate=learning_rate) # using modified whole4 params
       
    #now run training
    history = model.fit(
-      train_dd, train_ds,
+      train_ds, train_ds,
       batch_size = 128,
-      validation_data=(val_dd, val_ds),
+      validation_data=(val_ds, val_ds),
       shuffle=False,
       epochs=19                    
    )
@@ -78,9 +79,9 @@ def train_custom():
 def train_custom_resume(model, batchsize, epochs):
    #now run training
     history = model.fit(
-      train_dd, train_ds,
+      train_ds, train_ds,
       batch_size = batchsize,
-      validation_data=(val_dd, val_ds),
+      validation_data=(val_ds, val_ds),
       shuffle=False,
       epochs=epochs,
       callbacks= callbacks                    
@@ -88,7 +89,7 @@ def train_custom_resume(model, batchsize, epochs):
 
 if not(os.path.exists(os.path.join(MAIN_DIR, 'models'))):
     os.mkdir(os.path.join(MAIN_DIR, 'models'))
-modelpath = os.path.join(MAIN_DIR, 'models', 'whole4_doubledip.hdf5')
+modelpath = os.path.join(MAIN_DIR, 'models', 'whole4_redo.hdf5')
 checkpoint = ModelCheckpoint(modelpath, monitor='loss',
                              verbose=1, save_best_only=True,
                              mode='min')
@@ -99,5 +100,8 @@ reduce_lr = ReduceLROnPlateau(monitor='loss', factor=0.2,
 
 callbacks = [checkpoint, reduce_lr]
 
-from caepredict import model
-train_custom_resume(model, 128, 19)
+
+train_custom(conv2d1_size=200, conv2d2_size=210, conv2d3_size=10, convtrans1_size=184, convtrans2_size=230, convtrans3_size=130, learning_rate=0.0004686366872955983)
+
+# from caepredict import model
+# train_custom_resume(model, 128, 19)
