@@ -7,7 +7,7 @@ import tensorflow as tf
 from keras import layers
 from keras.models import Sequential
 from keras.optimizers import Adam
-from keras.callbacks import ModelCheckpoint
+from keras.callbacks import ModelCheckpoint, ReduceLROnPlateau
 
 # define img dimesions
 IMG_HEIGHT = 104
@@ -82,7 +82,8 @@ def train_custom_resume(model, batchsize, epochs):
       batch_size = batchsize,
       validation_data=(val_dd, val_ds),
       shuffle=False,
-      epochs=epochs                    
+      epochs=epochs,
+      callbacks= callbacks                    
    )
 
 if not(os.path.exists(os.path.join(MAIN_DIR, 'models'))):
@@ -91,6 +92,12 @@ modelpath = os.path.join(MAIN_DIR, 'models', 'whole4_doubledip.hdf5')
 checkpoint = ModelCheckpoint(modelpath, monitor='loss',
                              verbose=1, save_best_only=True,
                              mode='min')
+
+# if learning stals, reduce the LR
+reduce_lr = ReduceLROnPlateau(monitor='loss', factor=0.2,
+                              patience=1, min_lr=0.001)
+
+callbacks = [checkpoint, reduce_lr]
 
 from caepredict import model
 train_custom_resume(model, 128, 19)
