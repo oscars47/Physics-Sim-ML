@@ -6,7 +6,7 @@ from keras.models import Model, load_model
 MODEL_DIR = '/media/oscar47/Oscar Extra/Physics data/swarm_data/models'
 
 
-model = load_model(os.path.join(MODEL_DIR, 'whole4_cae.h5'))
+model = load_model(os.path.join(MODEL_DIR, 'whole4_doubledip.hdf5'))
 # create new model for the FV
 encoder = Model(inputs=model.input, outputs=model.get_layer('FV').output)
 decoder = Model(inputs=encoder.output, outputs=model.get_layer('OUT').output)
@@ -22,6 +22,16 @@ def get_fvs(ds, data_path, name):
 
     # save!
     np.save(os.path.join(data_path, 'fv_'+name+'.npy'))
+
+def get_fvs(ds):
+    fvs = encoder.predict(ds)
+    shape = fvs.shape
+    shape1 = shape[1]
+    shape2 = shape[2]
+    shape3 = shape[3]
+    fvs = fvs.reshape(len(ds),shape1*shape2*shape3)
+
+    return fvs
     
 # now go the other way -- decode fvs to get real images!
 def get_imgs(ds, data_path, name):

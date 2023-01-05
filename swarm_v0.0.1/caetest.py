@@ -4,7 +4,7 @@
 import os
 import numpy as np
 from caepredict import model, encoder, decoder
-from caehelper import display_random, display_sequential, noise
+from caehelper import display_random, display_sequential
 
 DATA_DIR = '/media/oscar47/Oscar Extra/Physics data/swarm_data/cae_output'
 
