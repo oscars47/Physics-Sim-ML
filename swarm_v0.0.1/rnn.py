@@ -9,7 +9,7 @@ from keras.optimizers import RMSprop
 from keras.callbacks import ModelCheckpoint, ReduceLROnPlateau
 
 # paths
-MAIN_DIR = '/media/oscar47/Oscar Extra/Physics data/swarm_data'
+MAIN_DIR = '/media/oscar47/Oscar_Extra/Physics_data/swarm_data'
 DATA_DIR= os.path.join(MAIN_DIR, 'rnn_output')
 MAX_FRAME = 120 # number of consecutive frame fv groupings
 
@@ -65,6 +65,24 @@ def build_model(LSTM_layer_size_1,  LSTM_layer_size_2, LSTM_layer_size_3,
 
     return model
 
+def train_custom(LSTM_layer_size_1=128,  LSTM_layer_size_2=128, LSTM_layer_size_3=128, 
+              LSTM_layer_size_4=128, LSTM_layer_size_5=128, 
+              dropout=0.1, learning_rate=0.01, epochs=1, batchsize=32):
+    #initialize the neural net; 
+    global model
+    model = build_model(LSTM_layer_size_1,  LSTM_layer_size_2, LSTM_layer_size_3, 
+            LSTM_layer_size_4, LSTM_layer_size_5, 
+            dropout, learning_rate)
+    
+    #now run training
+    history = model.fit(
+    x_train, y_train,
+    batch_size = batchsize,
+    validation_data=(x_val, y_val),
+    epochs=epochs,
+    callbacks=callbacks #use callbacks to have w&b log stats; will automatically save best model                     
+    ) 
+
 def train_custom_resume(model, batchsize, epochs):
    #now run training
    history = model.fit(
@@ -77,7 +95,9 @@ def train_custom_resume(model, batchsize, epochs):
 
 # define two other callbacks
 # save model
-modelpath = os.path.join(MAIN_DIR, 'models', 'rnn_model.hdf5')
+if not(os.path.exists(os.path.join(MAIN_DIR, 'models'))):
+    os.mkdir(os.path.join(MAIN_DIR, 'models'))
+modelpath = os.path.join(MAIN_DIR, 'models', 'rnn1.hdf5')
 checkpoint = ModelCheckpoint(modelpath, monitor='loss',
                              verbose=1, save_best_only=True,
                              mode='min')
@@ -88,3 +108,5 @@ reduce_lr = ReduceLROnPlateau(monitor='loss', factor=0.2,
 # compile the callbacks
 #callbacks = [checkpoint, reduce_lr, WandbCallback()]
 callbacks = [checkpoint, reduce_lr]
+
+train_custom()

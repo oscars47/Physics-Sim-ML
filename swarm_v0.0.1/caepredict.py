@@ -3,25 +3,25 @@ import numpy as np
 import matplotlib.pyplot as plt
 from keras.models import Model, load_model
 
-MODEL_DIR = '/media/oscar47/Oscar Extra/Physics_data/swarm_data/models'
+MODEL_DIR = '/media/oscar47/Oscar_Extra/Physics_data/swarm_data/models'
 
 
-model = load_model(os.path.join(MODEL_DIR, 'whole4_doubledip.hdf5'))
+model = load_model(os.path.join(MODEL_DIR, 'whole4_redo.hdf5'))
 # create new model for the FV
 encoder = Model(inputs=model.input, outputs=model.get_layer('FV').output)
 decoder = Model(inputs=encoder.output, outputs=model.get_layer('OUT').output)
 
 # get the feature vector representation of image arrays
-def get_fvs(ds, data_path, name):
-    fvs = encoder.predict(ds)
-    shape = fvs.shape
-    shape1 = shape[1]
-    shape2 = shape[2]
-    shape3 = shape[3]
-    fvs = fvs.reshape(len(ds),shape1*shape2*shape3)
+# def get_fvs(ds, data_path, name):
+#     fvs = encoder.predict(ds)
+#     shape = fvs.shape
+#     shape1 = shape[1]
+#     shape2 = shape[2]
+#     shape3 = shape[3]
+#     fvs = fvs.reshape(len(ds),shape1*shape2*shape3)
 
-    # save!
-    np.save(os.path.join(data_path, 'fv_'+name+'.npy'))
+#     # save!
+#     np.save(os.path.join(data_path, name+'.npy'))
 
 def get_fvs(ds):
     fvs = encoder.predict(ds)

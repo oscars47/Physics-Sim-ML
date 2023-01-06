@@ -19,6 +19,7 @@ MAIN_DIR = '/home/oscar47/Desktop/physics/swarm_data'
 DATA_DIR= os.path.join(MAIN_DIR, 'cae_output')
 
 train_ds = np.load(os.path.join(DATA_DIR, 'train_ds.npy'))
+train_ds = train_ds[:int(0.5*len(train_ds))] # reduce to 90% for memory
 val_ds = np.load(os.path.join(DATA_DIR, 'val_ds.npy'))
 
 # add noise!
@@ -73,7 +74,8 @@ def train_custom(conv2d1_size, conv2d2_size, conv2d3_size, convtrans1_size, conv
       batch_size = 128,
       validation_data=(val_ds, val_ds),
       shuffle=False,
-      epochs=19                    
+      epochs=100,
+      callbacks=callbacks                    
    )
 
 def train_custom_resume(model, batchsize, epochs):
