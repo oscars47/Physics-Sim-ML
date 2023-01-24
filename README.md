@@ -8,7 +8,7 @@ A repo for my physics-based simulation and machine learning projects.
   c). Training and validating my NG-RC
 ## Future projects:
 ### ROCFPH
-1. NG-RC + QHO, P.1
+1. NG-RC + QHO, P.2
 a. Extending the results of the NG-RC to a network of quantum harmonic oscillators.
 2. NG-RC + NS
 a. Extending the results of the NG-RC to data generated from the Navier-Stokes equations.
