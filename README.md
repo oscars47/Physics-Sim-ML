@@ -3,9 +3,9 @@ A repo for my physics-based simulation and machine learning projects.
 ## Current Projects:
 ### ROCFPH (ReservOir-Computing For PHysics)
 1. NG-RC + QHO, P.1
-a. Simulating a variety of dynamical systems (e.g., Double Scroll, Lorenz Attractor for chaotic dynamics) to prepare input data
-b. Building a Next Generation Reservoir Computer, a Nonlinear Vector Autoregressor (NVAR)
-c. Training and validating my NG-RC
+  a. Simulating a variety of dynamical systems (e.g., Double Scroll, Lorenz Attractor for chaotic dynamics) to prepare input data
+  b. Building a Next Generation Reservoir Computer, a Nonlinear Vector Autoregressor (NVAR)
+  c. Training and validating my NG-RC
 
 ## For later:
 ### PHLUID (PHhysics Learning Under Image Detection)
