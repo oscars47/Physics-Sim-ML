@@ -53,7 +53,6 @@ if np.shape(total_vec)[0] < np.shape(Y_d)[0]:
 # nonlin_vec = np.array(nonlin_vec)
 
 split_index= int(0.2*len(total_vec))
-print(split_index)
 # lin_train= lin_vec[:split_index, :]
 # nonlin_train= nonlin_vec[:split_index, :]
 
@@ -68,7 +67,26 @@ print(split_index)
 alpha = 1e-3
 Yd_train = np.array(Y_d[:split_index])
 total_vec_train = np.array(total_vec[:split_index])
-W_out =  np.linalg.pinv(total_vec_train @ total_vec_train.T + alpha*np.identity(split_index))@total_vec_train.T @Yd_train 
+W_out = total_vec_train.T @ (np.linalg.pinv(total_vec_train @ total_vec_train.T + alpha*np.identity(split_index)))
+print('W_out', np.shape(W_out))
+print('W_out tranpose', np.shape(W_out.T))
+print('Yd_train transpose', np.shape(Yd_train.T))
+print('Yd train', np.shape(Yd_train))
+W_out = Yd_train.T @ W_out.T
 print(W_out)
+print('W_out updated', np.shape(W_out))
+W_tot = Yd_train @ W_out
+print('W tot', W_tot)
+
+## need to implement gradient descent ##
+
+## now apply training!! ##
+
+
+
+
+
+
+# Y_train
 
 
